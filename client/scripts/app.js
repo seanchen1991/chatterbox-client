@@ -2,7 +2,7 @@
 var App = {};
 App.chatRooms = {};
 App.user = {};
-App.user.friends = [];
+App.user.friends = {};
 
 
 App.parseResponse = function(response) {
@@ -47,10 +47,16 @@ App.display = function(array) {
   $('#main ul').empty();
   for (var i = 0; i < array.length; i++) {
     if (array[i] && array[i].room === App.user.room) {
-      $('#main ul').append('<div class="chat"><span class="username">'+array[i].username+ '</span><time>'+ array[i].timeStamp +  '</time><p>' +
-        array[i].text + '</p></div>');
+      if (App.user.friends[array[i].username]) {
+        $('#main ul').append('<div class="chat"><span class="username">'+array[i].username+ '</span><time>'+ array[i].timeStamp +  '</time><p><strong>' +
+          array[i].text + '</p></strong></div>');
+      } else {
+        $('#main ul').append('<div class="chat"><span class="username">'+array[i].username+ '</span><time>'+ array[i].timeStamp +  '</time><p>' +
+          array[i].text + '</p></div>');
+      }
     }
   }
+  App.addFriend();
 };
 
 App.print = function(array) {
@@ -109,10 +115,8 @@ App.switchRoomListener = function() {
 };
 
 App.addFriend = function() {
-  $("ul").click(function(e) {
-    if (e.target.innerHTML ) {
-      App.user.friends.push(e.target.innerHTML);
-    }
+  $(".username").click(function(e) {
+    App.user.friends[e.target.innerHTML] = true;
   });
 };
 
@@ -124,11 +128,10 @@ $(document).ready(function() {
 
   App.submitListener();
   App.switchRoomListener();
-  App.addFriend();
   App.fetch(App.display);
   var interval = setInterval(function() {
     App.fetch(App.display);
-  }, 3000);
+  }, 500);
 });
 
 
