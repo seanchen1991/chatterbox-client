@@ -10,7 +10,7 @@ body {
     margin: auto 400px;
     text-align: left;
     background: white;
-    padding: 10px 10px;
+    padding: 5px 5px;
     border: solid #ddd;
     border-radius: 4px;
     border-width: 0 1px 1px 1px;
@@ -44,11 +44,8 @@ body {
 }
 
 form {
-    padding: 20px;
-    padding-left: 0;
-    margin-bottom: 20px;
-    width: 90%;
-    margin: auto 5%;
+    padding-top: 5px;
+    width: 99%;
 }
 
 form input[type=text] {
@@ -59,16 +56,21 @@ form input[type=text] {
 .chatBox{
     background-color: #666;
     margin: auto;
+    max-width: 100%;
     height: 600px;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
     border: 1px solid grey;
     border-radius: 4px;
 }
 .chat {
+    margin: auto auto auto -41px;
+    min-height: 50px;
     background-color: #eee;
     border: 1px solid grey;
     border-radius: 2px;
-    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 .chat .username {
     font-weight: 800;
@@ -81,11 +83,11 @@ form input[type=text] {
 }
 time{
     float: right;
-    margin: -22px 5px auto auto;
-    position: relative;
+    margin: 0px 5px auto auto;
 }
 .chat .username:hover {
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .spinner {
@@ -98,4 +100,8 @@ time{
     padding: 10px;
 }
 
-
+.rooms {
+    margin: -23px auto;
+    float:right;
+    width: 100px;
+}

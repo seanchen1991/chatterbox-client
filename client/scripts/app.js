@@ -1,6 +1,9 @@
 // YOUR CODE HERE:
 var App = {};
 App.chatRooms = {};
+App.user = {};
+App.user.friends = [];
+
 
 App.parseResponse = function(response) {
   var results = response.results;
@@ -12,7 +15,11 @@ App.parseResponse = function(response) {
       text[i].text = App.convert(results[i].text);
       text[i].timeStamp = $.timeago(results[i].createdAt);
       text[i].room = App.convert(results[i].roomname);
-      App.chatrooms[text[i].room] = true;
+
+      if (!(text[i].room in App.chatRooms)) {
+        App.chatRooms[text[i].room] = true;
+        $(".rooms").append("<option>" + text[i].room + "</option>");
+      }
     }
   }
   return text;
@@ -29,12 +36,18 @@ App.convert = function(string) {
   return letters.join("");
 };
 
+// App.updateRooms = function() {
+//   $(".rooms").empty();
+//   for (var key in App.chatRooms) {
+//     $(".rooms").append("<option>" + key + "</option>");
+//   }
+// };
 
 App.display = function(array) {
   $('#main ul').empty();
   for (var i = 0; i < array.length; i++) {
-    if (array[i]) {
-      $('#main ul').append('<div class="chat"><h4 class="username">'+array[i].username+ '</h4><time>'+ array[i].timeStamp +  '</time><p>' +
+    if (array[i] && array[i].room === App.user.room) {
+      $('#main ul').append('<div class="chat"><span class="username">'+array[i].username+ '</span><time>'+ array[i].timeStamp +  '</time><p>' +
         array[i].text + '</p></div>');
     }
   }
@@ -80,20 +93,42 @@ App.submitListener = function() {
   $('form').on("submit", function() {
     var message = {};
     message.text = $('input:text').val();
-    message.username = window.location.href.split("username=")[1];
-    message.roomname = "lobby";
+    message.username = App.user.username;
+    message.roomname = App.user.room;
     console.log(message.text);
     App.send(message);
     $('input:text').val('');
   });
 };
 
+App.switchRoomListener = function() {
+  $(".rooms").on("change", function() {
+    App.user.room = $(".rooms option:selected").text();
+    App.fetch(App.display);
+  });
+};
+
+App.addFriend = function() {
+  $("ul").click(function(e) {
+    if (e.target.innerHTML ) {
+      App.user.friends.push(e.target.innerHTML);
+    }
+  });
+};
 
 
 $(document).ready(function() {
+  App.user.username = window.location.href.split("username=")[1];
+  App.user.room = "lobby";
+  $(".rooms option:selected").text("");
+
   App.submitListener();
+  App.switchRoomListener();
+  App.addFriend();
   App.fetch(App.display);
-  var interval = setInterval(function() {App.fetch(App.display)}, 3000);
+  var interval = setInterval(function() {
+    App.fetch(App.display);
+  }, 3000);
 });
 
 
